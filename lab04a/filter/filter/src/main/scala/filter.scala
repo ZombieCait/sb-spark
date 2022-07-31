@@ -1,10 +1,9 @@
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
 
-object filter {
+object filter{
   def main(args: Array[String]): Unit = {
-    val user_name = "ekaterina_patrakova"
-    val password = "KOIfK1gQ"
+
     var spark = SparkSession.builder
       .appName("Lab04a_patrakova")
       .getOrCreate()
@@ -53,6 +52,7 @@ object filter {
     view.write
       .partitionBy("date_p")
       .format("json")
+      .mode("overwrite")
       .option("path", path + "/view")
       .save()
 
@@ -70,6 +70,7 @@ object filter {
     buy.write
       .partitionBy("date_p")
       .format("json")
+      .mode("overwrite")
       .option("path", path + "/buy")
       .save()
   }
