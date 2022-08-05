@@ -12,7 +12,7 @@ object filter{
     println(offset)
     val subscribe: String = spark.sparkContext.getConf.get("spark.filter.topic_name")
     println(subscribe)
-    val output_dir_prefix: String = spark.sparkContext.getConf.get("spark.filter.output_dir_prefix").replace("file://", "")
+    val output_dir_prefix: String = spark.sparkContext.getConf.get("spark.filter.output_dir_prefix")
     println(output_dir_prefix)
 
     val offset_kafka = if (offset.contains("earliest")) offset else  "{\"" + subscribe + "\":{\"0\":" + offset + "}}"
