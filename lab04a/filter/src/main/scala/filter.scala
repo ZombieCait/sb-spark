@@ -16,7 +16,6 @@ object filter{
     println(output_dir_prefix)
 
     val offset_kafka = if (offset.contains("earliest")) offset else  "{\"" + subscribe + "\":{\"0\":" + offset + "}}"
-    println(path)
     println(offset_kafka)
 
     val kafka_options = Map("subscribe" -> subscribe,
