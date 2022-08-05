@@ -15,7 +15,6 @@ object filter{
     val output_dir_prefix: String = spark.sparkContext.getConf.get("spark.filter.output_dir_prefix").replace("file://", "")
     println(output_dir_prefix)
 
-    val path = if (output_dir_prefix.contains("user")) output_dir_prefix else  "/user/ekaterina.patrakova/"+output_dir_prefix
     val offset_kafka = if (offset.contains("earliest")) offset else  "{\"" + subscribe + "\":{\"0\":" + offset + "}}"
     println(path)
     println(offset_kafka)
@@ -43,14 +42,14 @@ object filter{
       .partitionBy("_date")
       .format("json")
       .mode("overwrite")
-      .option("path", path + "/view")
+      .option("path", output_dir_prefix + "/view")
       .save()
 
     buy.write
       .partitionBy("_date")
       .format("json")
       .mode("overwrite")
-      .option("path", path + "/buy")
+      .option("path", output_dir_prefix + "/buy")
       .save()
   }
 }
