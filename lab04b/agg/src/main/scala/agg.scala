@@ -5,7 +5,7 @@ import org.apache.spark.sql.streaming._
 
 object agg {
   def main(args: Array[String]): Unit = {
-    val server = "spark-master-1.newprolab.com:6667"
+    val server = "spark-master-1:6667"
     val topic_in = "ekaterina_patrakova"
     val topic_out = "ekaterina_patrakova_lab04b_out"
 
@@ -28,27 +28,25 @@ object agg {
       .format("kafka")
       .option("kafka.bootstrap.servers", server)
       .option("subscribe", topic_in)
+      .option("failOnDataLoss", value = false)
       .load
-      .withWatermark("timestamp", "1 hour")
       .withColumn("values", from_json(col("value").cast("string"), schema))
       .select(col("values.*"))
-      .dropDuplicates(Seq("uid", "timestamp"))
+//      .dropDuplicates(Seq("uid", "timestamp"))
       .groupBy(window(to_timestamp(col("timestamp") / 1000), "1 hour", "1 hour"))
       .agg(
         expr("sum(case when event_type='buy' then item_price else 0 END)").as("revenue"),
         count(col("uid")).as("visitors"),
         expr("sum(case when event_type='buy' then 1 else 0 END)").as("purchases")
       )
-      .select(to_json(struct(
-        col("window.start").as("start_ts"),
-        col("window.end").as("end_ts"),
+      .select(lit(null).cast(StringType), to_json(struct(
+        col("window.start").cast(LongType).as("start_ts"),
+        col("window.end").cast(LongType).as("end_ts"),
         col("revenue"),
         col("visitors"),
         col("purchases"),
         (col("revenue") / col("purchases")).as("aov")
-      )
-      ).as("value"))
-
+      )).as("value"))
 
     val sink = df
       .writeStream
@@ -56,9 +54,9 @@ object agg {
       .outputMode("update")
       .option("kafka.bootstrap.servers", server)
       .option("topic", topic_out)
-      .trigger(Trigger.ProcessingTime("10 seconds"))
+      .trigger(Trigger.ProcessingTime("30 seconds"))
       .option("checkpointLocation", "chk/chunk_0")
-
-    sink.start.awaitTermination
+      .start
+      .awaitTermination
   }
 }
