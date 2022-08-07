@@ -1,0 +1,7 @@
+[debug] Packaging D:\sb-spark\lab04b\agg\target\scala-2.11\agg_2.11-1.0.jar ...
+[debug] Input file mappings:
+[debug] 	agg$.class
+[debug] 	  D:\sb-spark\lab04b\agg\target\scala-2.11\classes\agg$.class
+[debug] 	agg.class
+[debug] 	  D:\sb-spark\lab04b\agg\target\scala-2.11\classes\agg.class
+[debug] Done packaging.

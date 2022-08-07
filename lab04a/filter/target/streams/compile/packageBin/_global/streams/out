@@ -1,7 +1,0 @@
-[debug] Packaging D:\sb-spark\lab04a\filter\filter\target\scala-2.11\filter_2.11-1.0.jar ...
-[debug] Input file mappings:
-[debug] 	filter$.class
-[debug] 	  D:\sb-spark\lab04a\filter\filter\target\scala-2.11\classes\filter$.class
-[debug] 	filter.class
-[debug] 	  D:\sb-spark\lab04a\filter\filter\target\scala-2.11\classes\filter.class
-[debug] Done packaging.
