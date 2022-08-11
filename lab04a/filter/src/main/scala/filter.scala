@@ -8,6 +8,7 @@ object filter{
       .appName("Lab04a_patrakova")
       .getOrCreate()
     spark.conf.set("spark.sql.session.timeZone", "UTC")
+
     val offset: String = spark.sparkContext.getConf.get("spark.filter.offset")
     println(offset)
     val subscribe: String = spark.sparkContext.getConf.get("spark.filter.topic_name")
