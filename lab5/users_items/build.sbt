@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "2.11.12"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "user_items"
+    name := "users_items"
   )
 val sparkVersion = "2.4.5"
 libraryDependencies ++= Seq(
