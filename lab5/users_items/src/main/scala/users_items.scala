@@ -7,11 +7,16 @@ object users_items {
     val spark = SparkSession
       .builder
       .appName("patrakova_lab05")
-      .getOrCreate
+      .getOrCreate()
 
-    val input_dir = spark.conf.get("spark.users_items.input_dir")
-    val output_dir = spark.conf.get("spark.users_items.output_dir")
-    val update = spark.conf.get("spark.users_items.update")
+    spark.conf.set("spark.sql.session.timeZone", "UTC")
+
+    val input_dir = spark.sparkContext.getConf.get("spark.users_items.input_dir")
+    println(input_dir)
+    val output_dir = spark.sparkContext.getConf.get("spark.users_items.output_dir")
+    println(output_dir)
+    val update = spark.sparkContext.getConf.get("spark.users_items.update")
+    println(update)
 
     val get_item_name = regexp_replace(lower(col("item_id"))," |-", "_")
 
