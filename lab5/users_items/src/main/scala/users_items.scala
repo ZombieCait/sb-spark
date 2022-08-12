@@ -56,7 +56,6 @@ object users_items {
 
     user_items
       .write
-      .mode("append")
       .parquet(s"$output_dir/$max_dt")
 
   }
