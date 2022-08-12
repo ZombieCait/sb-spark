@@ -49,7 +49,8 @@ object users_items {
       user_items = user_items.union(old_user_items)
 
       val sums = user_items.columns.map(x => sum(x).as(x))
-      user_items = user_items.groupBy(col("uid")).agg(lit(0), sums.tail:_*)
+      user_items = user_items.groupBy(col("uid")).agg(lit(1).as("for_arg"), sums.tail:_*)
+                             .drop("for_arg")
     }
 
     val user_items_final = user_items.na.fill(0, user_items.columns)
