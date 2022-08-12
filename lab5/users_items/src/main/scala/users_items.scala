@@ -42,9 +42,10 @@ object users_items {
       .count
 
     var user_items = views_pivot.join(buy_pivot, Seq("uid"), "outer")
+    user_items = user_items.na.fill(0, user_items.columns)
 
     if (update == "1") {
-      var old_user_items = spark.read.parquet(s"$output_dir/20200429")
+      val old_user_items = spark.read.parquet(s"$output_dir/20200429")
 
       user_items = user_items.union(old_user_items)
 
@@ -53,9 +54,7 @@ object users_items {
                              .drop("for_arg")
     }
 
-    val user_items_final = user_items.na.fill(0, user_items.columns)
-    user_items_final
-      .repartition(200)
+    user_items
       .write
       .mode("append")
       .parquet(s"$output_dir/$max_dt")
