@@ -47,6 +47,17 @@ object users_items {
     if (update == "1") {
       val old_user_items = spark.read.parquet(s"$output_dir/20200429")
 
+      val left_сols = (Set() ++ user_items.columns) -= "uid"
+      val right_сols = (Set() ++ old_user_items.columns) -= "uid"
+      val item_cols = left_сols ++ right_сols
+
+      (item_cols -- left_сols).foreach(x => user_items = user_items.withColumn(x, lit(null)))
+      (item_cols -- right_сols).foreach(x => old_user_items = old_user_items.withColumn(x, lit(null)))
+
+      val all_cols_ordered = item_cols.toSeq.sorted
+      user_items = user_items.select((Seq("uid") ++ all_cols_ordered).map(col): _*)
+      old_user_items = old_user_items.select((Seq("uid") ++ all_cols_ordered).map(col): _*)
+
       user_items = user_items.union(old_user_items)
 
       val sums = user_items.columns.map(x => sum(x).as(x))
