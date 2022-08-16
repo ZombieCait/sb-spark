@@ -44,7 +44,7 @@ object users_items {
       .pivot(concat(lit("buy_"), col("item_id")))
       .count
 
-    var user_items = views_pivot.join(buy_pivot, Seq("uid"), "outer")
+    var user_items = views_pivot.union(buy_pivot)
     user_items = user_items.na.fill(0, user_items.columns)
 
     if (update == "1") {
