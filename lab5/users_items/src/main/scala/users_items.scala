@@ -47,12 +47,12 @@ object users_items {
       val left_сols = user_items.columns.toList
       val right_сols = old_user_items.columns.toList
 
-      right_сols.diff(left_сols).foreach(x => user_items = user_items.withColumn(x, lit(null)))
+      right_сols.diff(left_сols).foreach(x => user_items = user_items.withColumn(x, lit(0)))
 
       user_items = user_items.select(right_сols.map(col):_*)
-                              .union(old_user_items.select(right_сols.map(col):_*))
+                              .union(old_user_items)
 
-      val sums = user_items.columns.map(x => sum(x).as(x))
+      val sums = old_user_items.columns.map(x => sum(x).as(x))
       user_items = user_items.groupBy(col("uid")).agg(lit(1).as("for_arg"), sums.tail:_*)
                              .drop("for_arg")
     }
