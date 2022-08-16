@@ -41,7 +41,7 @@ object users_items {
       .pivot(concat(lit("buy_"), get_item_name))
       .count
 
-    var user_items = views_pivot.join(buy_pivot, Seq("uid"), "outer").filter("uid is not null")
+    var user_items = views_pivot.join(buy_pivot, Seq("uid"), "outer")
     user_items = user_items.na.fill(0, user_items.columns)
 
     if (update == "1") {
@@ -51,12 +51,10 @@ object users_items {
       val right_сols = old_user_items.columns.toList
 
       left_сols.diff(right_сols).foreach(x => user_items = user_items.withColumn(x, lit(null)))
-      right_сols.diff(left_сols).foreach(x => old_user_items = old_user_items.withColumn(x, lit(null)))
+//      right_сols.diff(left_сols).foreach(x => old_user_items = old_user_items.withColumn(x, lit(null)))
 
-      val all_cols = (left_сols ++ right_сols).sorted
-
-      user_items = user_items.select(all_cols.map(col):_*)
-                              .union(old_user_items.select(all_cols.map(col):_*))
+      user_items = user_items.select(right_сols.map(col):_*)
+                              .union(old_user_items.select(right_сols.map(col):_*))
 
       val sums = user_items.columns.map(x => sum(x).as(x))
       user_items = user_items.groupBy(col("uid")).agg(lit(1).as("for_arg"), sums.tail:_*)
