@@ -50,8 +50,7 @@ object users_items {
       val left_сols = user_items.columns.toList
       val right_сols = old_user_items.columns.toList
 
-      left_сols.diff(right_сols).foreach(x => user_items = user_items.withColumn(x, lit(null)))
-//      right_сols.diff(left_сols).foreach(x => old_user_items = old_user_items.withColumn(x, lit(null)))
+      right_сols.diff(left_сols).foreach(x => user_items = user_items.withColumn(x, lit(null)))
 
       user_items = user_items.select(right_сols.map(col):_*)
                               .union(old_user_items.select(right_сols.map(col):_*))
