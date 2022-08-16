@@ -28,7 +28,7 @@ object users_items {
     val buys = spark
       .read
       .json(input_dir + "/buy")
-      .withColumn("item_id", concat(lit("buys_"), get_item_name))
+      .withColumn("item_id", concat(lit("buy_"), get_item_name))
 
     val max_dt = views.union(buys)
       .select(expr("max(date)"))
