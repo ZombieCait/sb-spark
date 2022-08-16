@@ -23,29 +23,23 @@ object users_items {
     val views = spark
       .read
       .json(input_dir + "/view")
-      .withColumn("item_id", get_item_name)
+      .withColumn("item_id", concat(lit("view_"), get_item_name))
 
     val buys = spark
       .read
       .json(input_dir + "/buy")
-      .withColumn("item_id", get_item_name)
+      .withColumn("item_id", concat(lit("buys_"), get_item_name))
 
     val max_dt = views.union(buys)
       .select(expr("max(date)"))
       .collect()(0)(0)
+    var all = views.union(buys)
 
-    val views_pivot = views
+    var user_items = all
       .groupBy(col("uid"))
-      .pivot(concat(lit("view_"),col("item_id")))
+      .pivot("item_id")
       .count
-
-    val buy_pivot = buys
-      .groupBy(col("uid"))
-      .pivot(concat(lit("buy_"), col("item_id")))
-      .count
-
-    var user_items = views_pivot.union(buy_pivot)
-    user_items = user_items.na.fill(0, user_items.columns)
+      .na.fill(0)
 
     if (update == "1") {
       val old_user_items = spark.read.parquet(s"$output_dir/20200429")
