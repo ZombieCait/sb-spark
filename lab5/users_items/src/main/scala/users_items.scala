@@ -15,7 +15,7 @@ object users_items {
     println(input_dir)
     val output_dir = spark.sparkContext.getConf.get("spark.users_items.output_dir")
     println(output_dir)
-    val update = spark.sparkContext.getConf.get("spark.users_items.update")
+    val update: String = spark.sparkContext.getConf.get("spark.users_items.update")
     println(update)
 
     val get_item_name = regexp_replace(lower(col("item_id"))," |-", "_")
@@ -53,7 +53,7 @@ object users_items {
                               .union(old_user_items)
 
       val sums = old_user_items.columns.map(x => sum(x).as(x))
-      user_items = user_items.groupBy(col("uid")).agg(lit(1).as("for_arg"), sums.tail:_*)
+      user_items = user_items.groupBy("uid").agg(lit(1).as("for_arg"), sums.tail:_*)
                              .drop("for_arg")
     }
 
