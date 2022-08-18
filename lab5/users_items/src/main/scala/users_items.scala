@@ -18,7 +18,7 @@ object users_items {
     val update: String = spark.sparkContext.getConf.get("spark.users_items.update")
     println(update)
 
-    val get_item_name = regexp_replace(lower(col("item_id"))," |-", "_")
+    val get_item_name = regexp_replace(lower(col("item_id")), " |-", "_")
 
     val views = spark
       .read
@@ -49,12 +49,8 @@ object users_items {
 
       right_сols.diff(left_сols).foreach(x => user_items = user_items.withColumn(x, lit(0)))
 
-      user_items = user_items.select(right_сols.map(col):_*)
-                              .union(old_user_items)
-
-      val sums = old_user_items.columns.map(x => sum(x).as(x))
-      user_items = user_items.groupBy("uid").agg(lit(1).as("for_arg"), sums.tail:_*)
-                             .drop("for_arg")
+      user_items = old_user_items.union(user_items.select(right_сols.head, right_сols.tail: _*))
+        .groupBy("uid").sum().toDF(right_сols: _*)
     }
 
     user_items
