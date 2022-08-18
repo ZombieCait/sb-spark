@@ -32,7 +32,7 @@ object users_items {
 
     val union = views.union(buys)
     val max_dt = union
-      .select(expr("""max(from_unixtime(timestamp_val/1000), "yyyyMMdd")"""))
+      .select(expr("""max(from_unixtime(timestamp_val/1000, "yyyyMMdd"))"""))
       .collect()(0)(0)
 
     var user_items = union
