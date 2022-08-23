@@ -9,7 +9,7 @@ class test {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-      .appName("lab07_test")
+      .appName("patrakova_lab07")
       .getOrCreate
 
     val modelPath = spark.conf.get("spark.mlproject.model_path")
@@ -37,7 +37,7 @@ class test {
 
     val kafkaSink = logs
       .writeStream
-      .trigger(Trigger.ProcessingTime("45 seconds"))
+      .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
         // Подготовка данных
         val prepared_logs = batchDF
