@@ -39,7 +39,6 @@ object test {
       .writeStream
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
-        // Подготовка данных
         val prepared_logs = batchDF
           .select(from_json(col("value").cast("string"), schema).alias("values"))
           .select(col("values.*"))
@@ -57,6 +56,7 @@ object test {
           )).alias("value"))
           .write
           .format("kafka")
+          .option("checkpointLocation", "chk/")
           .option("kafka.bootstrap.servers", kafkaServer)
           .option("topic", kafkaOutputTopic)
           .save
