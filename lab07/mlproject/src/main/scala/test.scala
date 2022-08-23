@@ -62,6 +62,6 @@ object test {
           .save
       }
 
-    kafkaSink.start
+    kafkaSink.start.awaitTermination
   }
 }
