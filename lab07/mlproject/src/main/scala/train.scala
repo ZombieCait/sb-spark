@@ -4,7 +4,7 @@ import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.{CountVectorizer, StringIndexer, IndexToString}
 import org.apache.spark.ml.{Pipeline}
 
-class train {
+object train {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder

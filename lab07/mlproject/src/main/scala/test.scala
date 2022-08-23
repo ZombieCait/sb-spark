@@ -5,7 +5,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.ml.{PipelineModel}
 
-class test {
+object test {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
