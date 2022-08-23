@@ -41,8 +41,8 @@ object test {
       .foreachBatch { (batchDF: DataFrame, batchId: Long) =>
         // Подготовка данных
         val prepared_logs = batchDF
-          .select(col("timestamp"), from_json(col("value").cast("string"), schema).alias("values"))
-          .select(col("values"))
+          .select(from_json(col("value").cast("string"), schema).alias("values"))
+          .select(col("values.*"))
           .select(col("uid"), explode(col("visits")).alias("visits"))
           .withColumn("domain",  expr("regexp_replace(parse_url(visits.url, 'HOST'), '^www.', '')"))
           .groupBy(col("uid"))
